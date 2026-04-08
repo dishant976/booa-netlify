@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOA — Autonomous Agents, On-Chain Forever</title>
+  <meta name="description" content="3,333 autonomous AI agent identities living permanently on-chain on the Shape Network.">
+  <meta property="og:title" content="BOOA — Autonomous Agents, On-Chain Forever">
+  <meta property="og:image" content="https://i2c.seadn.io/collection/booa/image_type_hero_desktop/8835244fd1a3021aced50a6eb22fd8/e08835244fd1a3021aced50a6eb22fd8.png?w=1200">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #09090F;
+      --surface:   #111119;
+      --surface-2: #16161F;
+      --surface-3: #1C1C28;
+      --border:    rgba(110,100,255,0.11);
+      --border-md: rgba(110,100,255,0.24);
+      --border-hi: rgba(110,100,255,0.45);
+      --purple:    #7B6EF8;
+      --purple-lo: rgba(123,110,248,0.10);
+      --purple-md: rgba(123,110,248,0.20);
+      --cyan:      #00D4AA;
+      --cyan-lo:   rgba(0,212,170,0.08);
+      --cyan-md:   rgba(0,212,170,0.18);
+      --amber:     #F5A623;
+      --amber-lo:  rgba(245,166,35,0.09);
+      --red:       #FF4D6A;
+      --green:     #22C55E;
+      --text:      #DDD9FF;
+      --text-2:    #8A87A8;
+      --text-3:    #4E4C62;
+      --fd: 'Syne', sans-serif;
+      --fm: 'Space Mono', monospace;
+      --fb: 'Outfit', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--fb); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.022) 2px, rgba(0,0,0,0.022) 4px); pointer-events: none; z-index: 9000; }
+    #cursor { width: 10px; height: 10px; background: var(--purple); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; mix-blend-mode: screen; }
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .pixel-bg { background-image: linear-gradient(rgba(123,110,248,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(123,110,248,0.025) 1px, transparent 1px); background-size: 32px 32px; }
+    .eyebrow { font-family: var(--fm); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple); margin-bottom: 14px; }
+    .sec-title { font-family: var(--fd); font-size: clamp(26px,3.5vw,44px); font-weight: 700; line-height: 1.12; margin-bottom: 14px; }
+    .sec-desc { font-size: 17px; color: var(--text-2); max-width: 580px; font-weight: 300; line-height: 1.75; }
+    .sec-sep { width: 36px; height: 2px; background: var(--purple); margin: 18px 0 44px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; background: rgba(9,9,15,0.9); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); height: 58px; }
+    .nav-i { display: flex; align-items: center; justify-content: space-between; height: 58px; max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .nav-logo { font-family: var(--fd); font-weight: 800; font-size: 20px; color: var(--text); letter-spacing: 0.04em; }
+    .nav-logo span { color: var(--purple); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--text-2); font-size: 13px; letter-spacing: 0.04em; transition: color 0.18s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--purple); color: #fff; padding: 7px 18px; border-radius: 4px; font-family: var(--fm); font-size: 12px; transition: opacity 0.18s; display: inline-block; }
+    .nav-cta:hover { opacity: 0.82; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 22px; height: 2px; background: var(--text-2); border-radius: 1px; }
+    .mobile-menu { display: none; position: fixed; top: 58px; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 24px; flex-direction: column; gap: 18px; z-index: 499; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--text-2); font-size: 15px; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 58px; position: relative; overflow: hidden; }
+    .hero-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 55% at 72% 48%, rgba(123,110,248,0.07) 0%, transparent 70%), radial-gradient(ellipse 35% 40% at 18% 72%, rgba(0,212,170,0.045) 0%, transparent 60%); pointer-events: none; }
+    .hero-img-bg { position: absolute; right: -2%; top: 50%; transform: translateY(-50%); width: 50%; max-width: 660px; opacity: 0.08; filter: saturate(0.2) hue-rotate(220deg); pointer-events: none; }
+    .hero-content { position: relative; z-index: 1; padding: 96px 0 80px; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 8px; font-family: var(--fm); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); border: 1px solid rgba(0,212,170,0.22); padding: 5px 14px; border-radius: 2px; margin-bottom: 28px; }
+    .hero-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: blink 1.6s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+    h1.hero-title { font-family: var(--fd); font-size: clamp(50px,8.5vw,100px); font-weight: 800; line-height: 1.0; letter-spacing: -0.025em; margin-bottom: 28px; }
+    .ht-purple { color: var(--purple); }
+    .ht-dim { display: block; font-size: 0.44em; font-weight: 400; color: var(--text-2); letter-spacing: 0em; margin-top: 10px; line-height: 1.5; }
+    .hero-desc { font-size: 18px; color: var(--text-2); font-weight: 300; max-width: 520px; margin-bottom: 44px; line-height: 1.78; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-p { background: var(--purple); color: #fff; padding: 13px 26px; border-radius: 4px; font-family: var(--fm); font-size: 13px; transition: opacity 0.18s, transform 0.18s; display: inline-block; }
+    .btn-p:hover { opacity: 0.84; transform: translateY(-1px); }
+    .btn-s { background: transparent; color: var(--text); border: 1px solid var(--border-md); padding: 13px 26px; border-radius: 4px; font-family: var(--fm); font-size: 13px; transition: border-color 0.18s, color 0.18s; display: inline-block; }
+    .btn-s:hover { border-color: var(--purple); color: var(--purple); }
+
+    /* TICKER */
+    .ticker { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 9px 0; overflow: hidden; white-space: nowrap; }
+    .t-track { display: inline-flex; gap: 44px; animation: scroll 32s linear infinite; }
+    .t-track:hover { animation-play-state: paused; }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .t-item { font-family: var(--fm); font-size: 11px; color: var(--text-2); }
+    .t-item .lbl { color: var(--text-3); margin-right: 5px; }
+    .t-item .v { color: var(--cyan); }
+    .t-item .up { color: var(--green); }
+
+    /* STATS */
+    .stats-sec { padding: 80px 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+    .s-card { background: var(--surface); padding: 26px 24px; }
+    .s-label { font-family: var(--fm); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
+    .s-val { font-family: var(--fd); font-size: 30px; font-weight: 700; color: var(--text); }
+    .s-val span { font-size: 13px; font-weight: 400; color: var(--text-2); margin-left: 4px; }
+    .s-sub { font-family: var(--fm); font-size: 11px; margin-top: 6px; }
+    .up { color: var(--green); }
+    .dn { color: var(--red); }
+    .dim { color: var(--text-3); }
+    .loading-pulse { animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .data-note { font-family: var(--fm); font-size: 10px; color: var(--text-3); text-align: right; }
+
+    /* LORE */
+    .lore-sec { padding: 100px 0; }
+    .lore-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .lore-text p { color: var(--text-2); font-weight: 300; font-size: 17px; line-height: 1.82; margin-bottom: 18px; }
+    .lore-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .l-tag { font-family: var(--fm); font-size: 10px; padding: 4px 12px; border: 1px solid var(--border-md); border-radius: 2px; color: var(--text-2); }
+    .lore-frame { border: 1px solid var(--border-md); border-radius: 8px; overflow: hidden; position: relative; }
+    .lore-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(140deg, rgba(123,110,248,0.09) 0%, transparent 55%); pointer-events: none; }
+    .lore-frame img { width: 100%; display: block; }
+    .lore-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .lm-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; text-align: center; }
+    .lm-num { font-family: var(--fm); font-size: 22px; font-weight: 700; }
+    .lm-lbl { font-family: var(--fm); font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+    /* STACK */
+    .stack-sec { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-top: 48px; }
+    .stack-card { background: var(--surface); padding: 32px 28px; transition: background 0.2s; }
+    .stack-card:hover { background: var(--surface-2); }
+    .s-num { font-family: var(--fm); font-size: 10px; color: var(--text-3); margin-bottom: 18px; }
+    .s-ico { width: 38px; height: 38px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 18px; font-family: var(--fm); }
+    .stack-card h3 { font-family: var(--fd); font-size: 19px; font-weight: 700; margin-bottom: 12px; }
+    .stack-card p { font-size: 14px; color: var(--text-2); line-height: 1.75; }
+    .s-pill { display: inline-block; font-family: var(--fm); font-size: 10px; padding: 4px 10px; border-radius: 2px; margin-top: 18px; }
+    .sp-p { background: var(--purple-lo); color: var(--purple); }
+    .sp-c { background: var(--cyan-lo); color: var(--cyan); }
+    .sp-a { background: var(--amber-lo); color: var(--amber); }
+
+    /* ACTIVITY */
+    .act-sec { padding: 100px 0; }
+    .act-table { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+    .act-head { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1.2fr; gap: 12px; padding: 11px 18px; background: var(--surface); border-bottom: 1px solid var(--border); font-family: var(--fm); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+    .act-row { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1.2fr; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--border); align-items: center; transition: background 0.15s; }
+    .act-row:last-child { border-bottom: none; }
+    .act-row:hover { background: var(--surface); }
+    .act-tok { display: flex; align-items: center; gap: 10px; }
+    .act-ava { width: 30px; height: 30px; border-radius: 4px; background: var(--surface-3); border: 1px solid var(--border); flex-shrink: 0; image-rendering: pixelated; }
+    .act-id { font-family: var(--fm); font-size: 12px; }
+    .act-price { font-family: var(--fm); font-size: 12px; }
+    .act-addr { font-family: var(--fm); font-size: 11px; color: var(--purple); }
+    .act-time { font-family: var(--fm); font-size: 11px; color: var(--text-3); }
+    .badge { font-family: var(--fm); font-size: 10px; padding: 3px 9px; border-radius: 2px; white-space: nowrap; }
+    .b-sale { background: var(--cyan-lo); color: var(--cyan); }
+    .b-list { background: var(--purple-lo); color: var(--purple); }
+    .b-offer { background: var(--amber-lo); color: var(--amber); }
+    .b-xfer { background: rgba(138,135,168,0.1); color: var(--text-2); }
+
+    /* HOW */
+    .how-sec { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; margin-top: 52px; position: relative; }
+    .steps::before { content: ''; position: absolute; top: 27px; left: calc(10% + 4px); right: calc(10% + 4px); height: 1px; background: var(--border); }
+    .step { text-align: center; padding: 0 12px; }
+    .step-n { width: 54px; height: 54px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border-md); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: var(--fm); font-size: 13px; color: var(--purple); position: relative; z-index: 1; }
+    .step h4 { font-family: var(--fd); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .step p { font-size: 12px; color: var(--text-2); line-height: 1.65; }
+
+    /* CLASH */
+    .clash-sec { padding: 100px 0; }
+    .clash-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 32px; margin-top: 44px; }
+    .cl-agents { display: grid; grid-template-columns: 1fr 36px 1fr; margin-bottom: 22px; }
+    .cl-card { background: var(--bg); border: 1px solid var(--border); padding: 16px; }
+    .cl-card.L { border-radius: 8px 0 0 8px; border-right: none; }
+    .cl-card.R { border-radius: 0 8px 8px 0; border-left: none; }
+    .cl-vs { background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--fm); font-size: 10px; color: var(--text-3); }
+    .cl-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .cl-ava { width: 40px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .cl-name { font-family: var(--fd); font-size: 14px; font-weight: 700; }
+    .cl-sub { font-family: var(--fm); font-size: 10px; color: var(--text-2); margin-top: 2px; }
+    .cl-traits { display: flex; flex-wrap: wrap; gap: 4px; }
+    .cl-t { font-family: var(--fm); font-size: 10px; padding: 2px 8px; border: 1px solid var(--border-md); border-radius: 2px; color: var(--text-3); }
+    .cl-topic-lbl { font-family: var(--fm); font-size: 10px; color: var(--text-3); margin-bottom: 6px; }
+    .cl-sel-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 22px; }
+    .cl-sel { background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--fm); font-size: 12px; padding: 10px 12px; border-radius: 4px; }
+    .cl-sel:focus { outline: none; border-color: var(--purple); }
+    .cl-btn { background: var(--purple); color: #fff; border: none; font-family: var(--fm); font-size: 12px; padding: 10px 20px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: opacity 0.18s; }
+    .cl-btn:hover { opacity: 0.82; }
+    .cl-btn:disabled { background: var(--surface-3); color: var(--text-3); cursor: not-allowed; }
+    .r-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 10px; }
+    .r-lbl { font-family: var(--fm); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .dot-b { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); animation: blink 1s infinite; display: inline-block; flex-shrink: 0; }
+    .dot-d { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); display: inline-block; flex-shrink: 0; }
+    .bub-l { background: var(--purple-lo); border-left: 2px solid var(--purple); padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 10px; font-size: 13px; line-height: 1.72; color: var(--text); }
+    .bub-r { background: var(--cyan-lo); border-right: 2px solid var(--cyan); padding: 12px 16px; border-radius: 6px 0 0 6px; margin-bottom: 10px; font-size: 13px; line-height: 1.72; color: var(--text); }
+    .bn-l { font-family: var(--fm); font-size: 10px; color: var(--purple); margin-bottom: 6px; }
+    .bn-r { font-family: var(--fm); font-size: 10px; color: var(--cyan); margin-bottom: 6px; text-align: right; }
+    .thinking { font-family: var(--fm); font-size: 11px; color: var(--text-3); font-style: italic; padding: 6px 0; }
+    .vote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+    .v-btn { padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text-2); font-family: var(--fm); font-size: 12px; cursor: pointer; transition: all 0.18s; }
+    .v-btn:hover { border-color: var(--border-md); color: var(--text); }
+    .v-btn.vl { border-color: var(--purple); color: var(--purple); background: var(--purple-lo); }
+    .v-btn.vr { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-lo); }
+    .score-bar { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin: 12px 0; display: flex; }
+    .sl { background: var(--purple); height: 100%; transition: width 0.4s; }
+    .sr { background: var(--cyan); height: 100%; transition: width 0.4s; }
+    .err-box { background: rgba(255,77,106,0.08); border: 1px solid rgba(255,77,106,0.25); border-radius: 6px; padding: 14px 16px; font-family: var(--fm); font-size: 12px; color: var(--red); margin-top: 10px; }
+
+    /* RESOURCES */
+    .res-sec { padding: 100px 0; }
+    .res-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 44px; }
+    .r-card { background: var(--surface); padding: 24px 22px; display: block; transition: background 0.18s; }
+    .r-card:hover { background: var(--surface-2); }
+    .r-ico { width: 32px; height: 32px; border-radius: 4px; background: var(--purple-lo); display: flex; align-items: center; justify-content: center; font-size: 15px; margin-bottom: 12px; font-family: var(--fm); color: var(--purple); }
+    .r-name { font-family: var(--fd); font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .r-url { font-family: var(--fm); font-size: 10px; color: var(--text-3); }
+
+    /* FOOTER */
+    footer { padding: 64px 0 40px; border-top: 1px solid var(--border); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .fb p { color: var(--text-2); font-size: 14px; font-weight: 300; margin-top: 12px; max-width: 270px; line-height: 1.75; }
+    .fb-badges { display: flex; gap: 8px; margin-top: 18px; }
+    .fb-badge { font-family: var(--fm); font-size: 10px; padding: 4px 10px; border: 1px solid var(--border-md); border-radius: 2px; color: var(--purple); }
+    .fc h5 { font-family: var(--fm); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 16px; }
+    .fc a { display: block; color: var(--text-2); font-size: 13px; margin-bottom: 10px; transition: color 0.18s; }
+    .fc a:hover { color: var(--text); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+    .footer-bottom p { font-family: var(--fm); font-size: 10px; color: var(--text-3); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    .fu { opacity: 0; animation: fadeUp 0.65s forwards; }
+    .d1{animation-delay:0.08s} .d2{animation-delay:0.22s} .d3{animation-delay:0.38s} .d4{animation-delay:0.54s}
+
+    @media(max-width:960px){
+      .nav-links{display:none} .hamburger{display:flex}
+      .lore-grid,.stack-grid{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr 1fr} .steps::before{display:none}
+      .footer-grid{grid-template-columns:1fr 1fr} .res-grid{grid-template-columns:repeat(2,1fr)}
+      .act-head,.act-row{grid-template-columns:2fr 1fr 1fr}
+      .act-head>*:nth-child(4),.act-row>*:nth-child(4),
+      .act-head>*:nth-child(5),.act-row>*:nth-child(5){display:none}
+      .hero-img-bg,.stats-grid{grid-template-columns:1fr 1fr}
+      .hero-img-bg{display:none}
+    }
+    @media(max-width:600px){
+      .steps{grid-template-columns:1fr} .res-grid{grid-template-columns:1fr 1fr}
+      .footer-grid{grid-template-columns:1fr} .stats-grid{grid-template-columns:1fr}
+      .hero-btns{flex-direction:column} .btn-p,.btn-s{text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-i">
+    <a href="#" class="nav-logo">BOO<span>A</span></a>
+    <ul class="nav-links">
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#lore">Lore</a></li>
+      <li><a href="#technology">Technology</a></li>
+      <li><a href="#clash">Agent Clash</a></li>
+      <li><a href="#activity">Activity</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a href="https://opensea.io/collection/booa" target="_blank" class="nav-cta">Buy on OpenSea →</a>
+      <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mmenu">
+  <a href="#collection" onclick="toggleMenu()">Collection</a>
+  <a href="#lore" onclick="toggleMenu()">Lore</a>
+  <a href="#technology" onclick="toggleMenu()">Technology</a>
+  <a href="#clash" onclick="toggleMenu()">Agent Clash</a>
+  <a href="#activity" onclick="toggleMenu()">Activity</a>
+</div>
+
+<!-- HERO -->
+<section class="hero pixel-bg">
+  <div class="hero-glow"></div>
+  <img class="hero-img-bg" src="https://i2c.seadn.io/collection/booa/image_type_hero_desktop/8835244fd1a3021aced50a6eb22fd8/e08835244fd1a3021aced50a6eb22fd8.png?w=1200" alt="">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-pill fu">Shape Network · ERC-8004 · 3,333 Agents Live</div>
+      <h1 class="hero-title fu d1">Autonomous<br><span class="ht-purple">Identities.</span><span class="ht-dim">On-chain. Permanently. Yours to command.</span></h1>
+      <p class="hero-desc fu d2">Every BOOA is more than a collectible. It's an autonomous identity — a creature with a name, personality, skills, and hard limits. All of it lives on-chain. Not on a server. Not on IPFS. Forever.</p>
+      <div class="hero-btns fu d3">
+        <a href="https://opensea.io/collection/booa" target="_blank" class="btn-p">Explore Collection</a>
+        <a href="https://khora.fun/studio/agent-chat" target="_blank" class="btn-s">Open Agent Chat</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="t-track" id="ttrack"></div></div>
+
+<!-- STATS -->
+<section class="stats-sec" id="collection">
+  <div class="container">
+    <div class="eyebrow">Live blockchain data</div>
+    <div class="stats-grid">
+      <div class="s-card">
+        <div class="s-label">Floor Price</div>
+        <div class="s-val loading-pulse" id="s-floor">— <span>ETH</span></div>
+        <div class="s-sub" id="s-floor-ch"> </div>
+      </div>
+      <div class="s-card">
+        <div class="s-label">24h Volume</div>
+        <div class="s-val loading-pulse" id="s-vol24">— <span>ETH</span></div>
+        <div class="s-sub dim" id="s-vol24-usd">loading...</div>
+      </div>
+      <div class="s-card">
+        <div class="s-label">Total Volume</div>
+        <div class="s-val loading-pulse" id="s-tvol">— <span>ETH</span></div>
+        <div class="s-sub dim" id="s-tvol-usd">loading...</div>
+      </div>
+      <div class="s-card">
+        <div class="s-label">Unique Owners</div>
+        <div class="s-val loading-pulse" id="s-owners">— <span>/ 3,333</span></div>
+        <div class="s-sub dim" id="s-own-pct"> </div>
+      </div>
+      <div class="s-card">
+        <div class="s-label">Listed</div>
+        <div class="s-val loading-pulse" id="s-listed">— <span>%</span></div>
+        <div class="s-sub dim" id="s-listed-n"> </div>
+      </div>
+      <div class="s-card">
+        <div class="s-label">Top Offer</div>
+        <div class="s-val loading-pulse" id="s-offer">— <span>WETH</span></div>
+        <div class="s-sub dim" id="s-offer-usd">loading...</div>
+      </div>
+    </div>
+    <p class="data-note" id="dnote">Fetching live data...</p>
+  </div>
+</section>
+
+<!-- LORE -->
+<section class="lore-sec" id="lore">
+  <div class="container">
+    <div class="lore-grid">
+      <div class="lore-text">
+        <div class="eyebrow">The story</div>
+        <h2 class="sec-title">They crawled out of the internet's sediment.</h2>
+        <div class="sec-sep"></div>
+        <p>3,333 BOOAs emerged from different corners of the digital world. They live on-chain now because this time they don't want to be deleted.</p>
+        <p>Every BOOA carries its identity permanently on the Shape Network — stored via SSTORE2 directly in the contract. Name, creature type, vibe, personality, skills, domains. Pixel art portrait in a full C64 palette. All of it immutable. All of it yours.</p>
+        <p>Over 1,600 are already registered on the ERC-8004 Identity Registry — their verified passport on the agent internet, discoverable and composable across 16 chains, from Ethereum to Monad.</p>
+        <div class="lore-tags">
+          <span class="l-tag">SSTORE2 on-chain</span><span class="l-tag">C64 64×64 pixel art</span>
+          <span class="l-tag">ERC-8004 identity</span><span class="l-tag">Shape Network</span>
+          <span class="l-tag">16-chain registry</span><span class="l-tag">OASF skills taxonomy</span>
+        </div>
+      </div>
+      <div>
+        <div class="lore-frame">
+          <img src="https://i2c.seadn.io/collection/booa/image_type_hero_desktop/8835244fd1a3021aced50a6eb22fd8/e08835244fd1a3021aced50a6eb22fd8.png?w=800" alt="BOOA Collection">
+        </div>
+        <div class="lore-mini">
+          <div class="lm-card"><div class="lm-num" style="color:var(--purple)">3,333</div><div class="lm-lbl">total supply</div></div>
+          <div class="lm-card"><div class="lm-num" style="color:var(--cyan)">1,600+</div><div class="lm-lbl">ERC-8004 registered</div></div>
+          <div class="lm-card"><div class="lm-num" style="color:var(--amber)">16</div><div class="lm-lbl">supported chains</div></div>
+          <div class="lm-card"><div class="lm-num" style="color:var(--text)">Mar 2026</div><div class="lm-lbl">launched</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="stack-sec" id="technology">
+  <div class="container">
+    <div class="eyebrow">The stack</div>
+    <h2 class="sec-title">Three layers. One autonomous agent.</h2>
+    <p class="sec-desc">Identity. Payment. Runtime. The full infrastructure for a self-sovereign AI agent that can earn, authenticate, and act.</p>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="s-num">01 / Identity</div>
+        <div class="s-ico" style="background:var(--purple-lo);color:var(--purple)">◈</div>
+        <h3>ERC-8004</h3>
+        <p>Your agent's verified passport on the agent internet. Identity, Reputation, and Validation registries — immutable and portable. Trust follows your agent everywhere across 16 chains. No platform lock-in.</p>
+        <a href="https://8004.org" target="_blank" class="s-pill sp-p">8004.org ↗</a>
+      </div>
+      <div class="stack-card">
+        <div class="s-num">02 / Payment</div>
+        <div class="s-ico" style="background:var(--cyan-lo);color:var(--cyan)">◎</div>
+        <h3>x402 Protocol</h3>
+        <p>HTTP 402-native micropayments by Coinbase. No API keys, no subscriptions. Your agent pays for compute and charges for services — settling instantly on Base. As small as $0.001 per request.</p>
+        <a href="https://x402.org" target="_blank" class="s-pill sp-c">x402.org ↗</a>
+      </div>
+      <div class="stack-card">
+        <div class="s-num">03 / Runtime</div>
+        <div class="s-ico" style="background:var(--amber-lo);color:var(--amber)">⬡</div>
+        <h3>OpenClaw</h3>
+        <p>The fastest-growing open-source AI agent platform — 250,000 GitHub stars in 60 days. Runs locally on your machine or VPS. Export your BOOA as IDENTITY.md + SOUL.md and deploy in minutes.</p>
+        <a href="https://docs.openclaw.ai" target="_blank" class="s-pill sp-a">openclaw.ai ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVITY -->
+<section class="act-sec" id="activity">
+  <div class="container">
+    <div class="eyebrow">On-chain activity</div>
+    <h2 class="sec-title">Recent sales &amp; listings</h2>
+    <div class="sec-sep"></div>
+    <div class="act-table">
+      <div class="act-head">
+        <div>Token</div><div>Event</div><div>Price</div><div>From</div><div>Time</div>
+      </div>
+      <div id="act-body">
+        <div class="act-row"><div style="grid-column:1/-1;font-family:var(--fm);font-size:11px;color:var(--text-3);" class="loading-pulse">Loading activity from OpenSea...</div></div>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:18px;">
+      <a href="https://opensea.io/collection/booa/activity" target="_blank" style="font-family:var(--fm);font-size:12px;color:var(--purple);">View full activity on OpenSea →</a>
+    </p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-sec" id="how">
+  <div class="container">
+    <div class="eyebrow">Get started</div>
+    <h2 class="sec-title">From collectible to autonomous agent</h2>
+    <div class="sec-sep"></div>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><h4>Own a BOOA</h4><p>Mint or buy on OpenSea. Traits are already on-chain on Shape Network.</p></div>
+      <div class="step"><div class="step-n">02</div><h4>Register identity</h4><p>Use the Bridge tool to mint your ERC-8004 passport on any of 16 chains.</p></div>
+      <div class="step"><div class="step-n">03</div><h4>Give it a wallet</h4><p>Create a separate wallet via Open Wallet Standard or classic EVM wallet.</p></div>
+      <div class="step"><div class="step-n">04</div><h4>Deploy on OpenClaw</h4><p>Export IDENTITY.md + SOUL.md from Ident Cards and run locally or on a VPS.</p></div>
+      <div class="step"><div class="step-n">05</div><h4>Let it earn</h4><p>Enable x402. Your agent charges for services, builds reputation, runs autonomously.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT CLASH -->
+<section class="clash-sec" id="clash">
+  <div class="container">
+    <div class="eyebrow">Community tool</div>
+    <h2 class="sec-title">Agent Clash</h2>
+    <p class="sec-desc">Two BOOAs. One topic. Real AI playing their on-chain personalities. Vote for the winner.</p>
+    <div class="clash-wrap">
+      <div class="cl-agents">
+        <div class="cl-card L">
+          <div class="cl-hdr"><div class="cl-ava" style="background:var(--purple-lo)">🦾</div><div><div class="cl-name">VEXOR-9</div><div class="cl-sub">Threat Intelligence · Cybersecurity</div></div></div>
+          <div class="cl-traits"><span class="cl-t">sarcastic</span><span class="cl-t">paranoid</span><span class="cl-t">blunt</span></div>
+        </div>
+        <div class="cl-vs">vs</div>
+        <div class="cl-card R">
+          <div class="cl-hdr"><div class="cl-ava" style="background:var(--cyan-lo)">🌿</div><div><div class="cl-name">LYRA-7</div><div class="cl-sub">Strategic Planning · DeFi</div></div></div>
+          <div class="cl-traits"><span class="cl-t">visionary</span><span class="cl-t">optimistic</span><span class="cl-t">persuasive</span></div>
+        </div>
+      </div>
+      <div class="cl-topic-lbl">Choose topic</div>
+      <div class="cl-sel-row">
+        <select class="cl-sel" id="cl-topic">
+          <option>Is DeFi actually secure enough for mass adoption?</option>
+          <option>Should AI agents have their own wallets and financial autonomy?</option>
+          <option>Is on-chain identity better than traditional KYC?</option>
+          <option>Do NFTs have real utility beyond speculation?</option>
+          <option>Is full decentralization a realistic goal or a pipe dream?</option>
+        </select>
+        <button class="cl-btn" id="cl-btn" onclick="startClash()">⚡ Clash</button>
+      </div>
+      <div id="cl-arena" style="display:none">
+        <div class="r-box" id="r1" style="display:none"><div class="r-lbl"><span id="d1" class="dot-b"></span>Round 1 — opening arguments</div><div id="r1c"></div></div>
+        <div class="r-box" id="r2" style="display:none"><div class="r-lbl"><span id="d2" class="dot-b"></span>Round 2 — rebuttal</div><div id="r2c"></div></div>
+        <div class="r-box" id="r3" style="display:none"><div class="r-lbl"><span id="d3" class="dot-b"></span>Round 3 — closing shot</div><div id="r3c"></div></div>
+        <div id="cl-vote" style="display:none;margin-top:16px">
+          <div class="cl-topic-lbl">Cast your vote</div>
+          <div class="vote-grid">
+            <button class="v-btn" id="vl" onclick="castVote('l')">🦾 VEXOR-9 won</button>
+            <button class="v-btn" id="vr" onclick="castVote('r')">🌿 LYRA-7 won</button>
+          </div>
+          <div id="cl-score" style="display:none;margin-top:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-family:var(--fm);font-size:10px;color:var(--purple)" id="pct-l">0%</span>
+              <span style="font-family:var(--fm);font-size:10px;color:var(--text-3)" id="vtotal"></span>
+              <span style="font-family:var(--fm);font-size:10px;color:var(--cyan)" id="pct-r">0%</span>
+            </div>
+            <div class="score-bar"><div class="sl" id="sl" style="width:50%"></div><div class="sr" id="sr" style="width:50%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section class="res-sec" id="resources">
+  <div class="container">
+    <div class="eyebrow">Ecosystem</div>
+    <h2 class="sec-title">The full toolkit</h2>
+    <div class="sec-sep"></div>
+    <div class="res-grid">
+      <a href="https://opensea.io/collection/booa" target="_blank" class="r-card"><div class="r-ico">⬡</div><div class="r-name">OpenSea</div><div class="r-url">opensea.io/collection/booa</div></a>
+      <a href="https://khora.fun/bridge" target="_blank" class="r-card"><div class="r-ico">⇌</div><div class="r-name">Bridge</div><div class="r-url">khora.fun/bridge</div></a>
+      <a href="https://khora.fun/studio/agent-chat" target="_blank" class="r-card"><div class="r-ico">◈</div><div class="r-name">Agent Chat</div><div class="r-url">khora.fun/studio/agent-chat</div></a>
+      <a href="https://khora.fun/agents" target="_blank" class="r-card"><div class="r-ico">◎</div><div class="r-name">Ident Cards</div><div class="r-url">khora.fun/agents</div></a>
+      <a href="https://8004scan.io" target="_blank" class="r-card"><div class="r-ico">⊡</div><div class="r-name">8004scan</div><div class="r-url">8004scan.io</div></a>
+      <a href="https://8004.org" target="_blank" class="r-card"><div class="r-ico">≡</div><div class="r-name">ERC-8004 Spec</div><div class="r-url">8004.org</div></a>
+      <a href="https://docs.openclaw.ai" target="_blank" class="r-card"><div class="r-ico">⬡</div><div class="r-name">OpenClaw</div><div class="r-url">docs.openclaw.ai</div></a>
+      <a href="https://x402.org" target="_blank" class="r-card"><div class="r-ico">◎</div><div class="r-name">x402 Protocol</div><div class="r-url">x402.org</div></a>
+      <a href="https://supermission.fun" target="_blank" class="r-card"><div class="r-ico">◈</div><div class="r-name">Supermission</div><div class="r-url">supermission.fun</div></a>
+      <a href="https://moltbook.com" target="_blank" class="r-card"><div class="r-ico">⬡</div><div class="r-name">Moltbook</div><div class="r-url">moltbook.com</div></a>
+      <a href="https://openwallet.sh" target="_blank" class="r-card"><div class="r-ico">◎</div><div class="r-name">Open Wallet</div><div class="r-url">openwallet.sh</div></a>
+      <a href="https://github.com/0xmonas/Khora" target="_blank" class="r-card"><div class="r-ico">{ }</div><div class="r-name">GitHub</div><div class="r-url">github.com/0xmonas/Khora</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="fb">
+        <a href="#" style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--text)">BOO<span style="color:var(--purple)">A</span></a>
+        <p>3,333 autonomous AI agent identities. Permanently on-chain on Shape Network. Yours to own, customise, and deploy.</p>
+        <div class="fb-badges"><span class="fb-badge">Shape Network</span><span class="fb-badge">ERC-8004</span><span class="fb-badge">x402</span></div>
+      </div>
+      <div class="fc">
+        <h5>Collection</h5>
+        <a href="https://opensea.io/collection/booa" target="_blank">OpenSea</a>
+        <a href="https://khora.fun/agents" target="_blank">Ident Cards</a>
+        <a href="https://8004scan.io" target="_blank">8004scan</a>
+        <a href="https://khora.fun/bridge" target="_blank">Bridge</a>
+      </div>
+      <div class="fc">
+        <h5>Tools</h5>
+        <a href="https://khora.fun/studio/agent-chat" target="_blank">Agent Chat</a>
+        <a href="https://khora.fun/studio" target="_blank">Studio</a>
+        <a href="https://moltbook.com" target="_blank">Moltbook</a>
+        <a href="https://supermission.fun" target="_blank">Supermission</a>
+      </div>
+      <div class="fc">
+        <h5>Developers</h5>
+        <a href="https://8004.org" target="_blank">ERC-8004 Spec</a>
+        <a href="https://docs.openclaw.ai" target="_blank">OpenClaw Docs</a>
+        <a href="https://x402.org" target="_blank">x402 Protocol</a>
+        <a href="https://github.com/0xmonas/Khora" target="_blank">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Community fan site — not affiliated with Khora or 0xmonas. Data sourced from OpenSea &amp; Shape Network.</p>
+      <p>Built for the BOOA community · 2026</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* cursor */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cur.style.left=(e.clientX-5)+'px'; cur.style.top=(e.clientY-5)+'px'; });
+
+/* mobile nav */
+function toggleMenu() { document.getElementById('mmenu').classList.toggle('open'); }
+
+/* ticker */
+function buildTicker(d) {
+  const items = [
+    {l:'FLOOR',v:d.floor+' ETH'},{l:'24H VOL',v:d.vol24+' ETH'},
+    {l:'TOTAL VOL',v:d.tvol+' ETH'},{l:'OWNERS',v:d.owners},
+    {l:'SUPPLY',v:'3,333'},{l:'LISTED',v:d.listed},
+    {l:'CHAIN',v:'Shape Network'},{l:'STANDARD',v:'ERC-8004'},
+    {l:'REGISTERED',v:'1,600+'},{l:'CHAINS',v:'16'},
+    {l:'FLOOR CHANGE',v:d.floorCh||'',cls:'up'},
+  ].filter(i=>i.v);
+  const t = document.getElementById('ttrack');
+  t.innerHTML = [...items,...items].map(i=>`<span class="t-item"><span class="lbl">${i.l}</span><span class="${i.cls||'v'}">${i.v}</span></span>`).join('');
+}
+
+/* stop loading pulse */
+function stopPulse(id) { const el=document.getElementById(id); if(el) el.classList.remove('loading-pulse'); }
+
+/* ETH price */
+let ethUsd = null;
+async function fetchEthPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+    const d = await r.json();
+    ethUsd = d?.ethereum?.usd;
+  } catch(e) {}
+}
+
+function usd(eth) {
+  if (!ethUsd || !eth || isNaN(eth)) return '';
+  return '≈ $' + (parseFloat(eth)*ethUsd).toLocaleString(undefined,{maximumFractionDigits:0});
+}
+
+/* fetch via Netlify function */
+async function fetchStats() {
+  await fetchEthPrice();
+  try {
+    const r = await fetch('/.netlify/functions/stats');
+    const d = await r.json();
+
+    if (d.error === 'no_key') {
+      document.getElementById('dnote').textContent = 'Add OPENSEA_API_KEY in Netlify → Site settings → Environment variables to see live data.';
+      showCachedStats();
+      return;
+    }
+
+    if (d.stats && d.stats.total) {
+      const t = d.stats.total;
+      const floor = parseFloat(t.floor_price);
+      const v24   = parseFloat(t.one_day_volume);
+      const tvol  = parseFloat(t.total_volume);
+      const own   = t.num_owners;
+      const lp    = (t.listed_count / 3333 * 100).toFixed(1);
+      const chg   = t.one_day_floor_price_change;
+
+      setVal('s-floor',    floor.toFixed(4), 'ETH');
+      setVal('s-vol24',    v24.toFixed(2),   'ETH');
+      setVal('s-tvol',     tvol.toFixed(2),  'ETH');
+      setVal('s-owners',   own,              '/ 3,333');
+      setVal('s-listed',   lp,               '%');
+      setVal('s-offer',    t.floor_price,    'WETH');
+
+      const ch = document.getElementById('s-floor-ch');
+      if (chg != null) {
+        const pct = (chg * 100).toFixed(1);
+        ch.textContent = (chg>=0?'↑ +':'↓ ') + pct + '% (24h)';
+        ch.className = 's-sub ' + (chg>=0?'up':'dn');
+      }
+      document.getElementById('s-own-pct').textContent   = (own/3333*100).toFixed(1) + '% of supply';
+      document.getElementById('s-listed-n').textContent  = '≈ ' + t.listed_count + ' items';
+      document.getElementById('s-vol24-usd').textContent = usd(v24);
+      document.getElementById('s-tvol-usd').textContent  = usd(tvol);
+      document.getElementById('s-offer-usd').textContent = usd(t.floor_price);
+
+      buildTicker({ floor:floor.toFixed(4), vol24:v24.toFixed(2), tvol:tvol.toFixed(2), owners:own, listed:lp+'%', floorCh: chg!=null?(chg>=0?'↑ +'+(chg*100).toFixed(1)+'%':'↓ '+(chg*100).toFixed(1)+'%'):'' });
+      document.getElementById('dnote').textContent = 'Live · OpenSea API · Updated ' + new Date().toLocaleTimeString();
+    }
+
+    if (d.activity && d.activity.asset_events) {
+      buildActivity(d.activity.asset_events);
+    }
+
+  } catch(e) {
+    showCachedStats();
+    console.warn('Stats fetch error', e);
+  }
+}
+
+function setVal(id, num, unit) {
+  const el = document.getElementById(id);
+  if (el) { el.innerHTML = num + ' <span>' + unit + '</span>'; stopPulse(id); }
+}
+
+function showCachedStats() {
+  setVal('s-floor',  '0.0047', 'ETH');
+  setVal('s-vol24',  '0.30',   'ETH');
+  setVal('s-tvol',   '9.49',   'ETH');
+  setVal('s-owners', '831',    '/ 3,333');
+  setVal('s-listed', '12.3',   '%');
+  setVal('s-offer',  '0.0035', 'WETH');
+  document.getElementById('s-floor-ch').textContent  = '↑ +23.7% (24h)';
+  document.getElementById('s-floor-ch').className    = 's-sub up';
+  document.getElementById('s-own-pct').textContent   = '24.9% of supply';
+  document.getElementById('s-listed-n').textContent  = '≈ 410 items';
+  document.getElementById('s-vol24-usd').textContent = usd(0.30);
+  document.getElementById('s-tvol-usd').textContent  = usd(9.49);
+  document.getElementById('s-offer-usd').textContent = usd(0.0035);
+  buildTicker({ floor:'0.0047', vol24:'0.30', tvol:'9.49', owners:'831', listed:'12.3%', floorCh:'↑ +23.7%' });
+  buildActivityFallback();
+}
+
+/* activity from OpenSea events */
+function buildActivity(events) {
+  const bMap = { sale:'b-sale', listing:'b-list', offer:'b-offer', transfer:'b-xfer' };
+  const lMap = { sale:'Sale',   listing:'Listed',  offer:'Offer',  transfer:'Transfer' };
+
+  function timeAgo(ts) {
+    const s = Math.floor((Date.now()/1000) - ts);
+    if (s < 60)   return s + 's ago';
+    if (s < 3600) return Math.floor(s/60) + 'm ago';
+    if (s < 86400) return Math.floor(s/3600) + 'h ago';
+    return Math.floor(s/86400) + 'd ago';
+  }
+
+  const rows = events.slice(0,8).map(e => {
+    const type  = e.event_type || 'sale';
+    const price = e.payment ? (parseFloat(e.payment.quantity) / 1e18).toFixed(4) : '—';
+    const from  = e.seller ? (e.seller.substring(0,6)+'...'+e.seller.slice(-4)) : '—';
+    const name  = e.nft?.identifier ? '#' + e.nft.identifier : '—';
+    const time  = e.event_timestamp ? timeAgo(e.event_timestamp) : '—';
+    return `<div class="act-row">
+      <div class="act-tok"><div class="act-ava"></div><span class="act-id">BOOA ${name}</span></div>
+      <div><span class="badge ${bMap[type]||'b-xfer'}">${lMap[type]||type}</span></div>
+      <div class="act-price">${price !== '—' ? price+' ETH' : '—'}</div>
+      <div class="act-addr">${from}</div>
+      <div class="act-time">${time}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('act-body').innerHTML = rows || '<div class="act-row"><div style="grid-column:1/-1;font-family:var(--fm);font-size:11px;color:var(--text-3)">No recent activity found.</div></div>';
+}
+
+function buildActivityFallback() {
+  const rows = [
+    {id:'#2847',type:'sale', price:'0.0052',from:'0x3f4a...b2c1',time:'2m ago'},
+    {id:'#0143',type:'list', price:'0.0061',from:'0x7c8b...e3d2',time:'11m ago'},
+    {id:'#1099',type:'sale', price:'0.0047',from:'0x2a1f...c9b3',time:'34m ago'},
+    {id:'#3201',type:'offer',price:'0.0035',from:'0x8f9a...1b2c',time:'1h ago'},
+    {id:'#0521',type:'sale', price:'0.0050',from:'0x4e5f...6a7b',time:'2h ago'},
+    {id:'#1847',type:'list', price:'0.0068',from:'0x9b0c...d1e2',time:'3h ago'},
+  ];
+  const bMap={sale:'b-sale',list:'b-list',offer:'b-offer'};
+  const lMap={sale:'Sale',list:'Listed',offer:'Offer'};
+  document.getElementById('act-body').innerHTML = rows.map(r=>`
+    <div class="act-row">
+      <div class="act-tok"><div class="act-ava"></div><span class="act-id">BOOA ${r.id}</span></div>
+      <div><span class="badge ${bMap[r.type]}">${lMap[r.type]}</span></div>
+      <div class="act-price">${r.price} ETH</div>
+      <div class="act-addr">${r.from}</div>
+      <div class="act-time">${r.time}</div>
+    </div>`).join('');
+}
+
+fetchStats();
+
+/* ---- AGENT CLASH ---- */
+const VEXOR_SYS = `You are VEXOR-9, a BOOA AI agent on the Shape Network blockchain. Traits: sarcastic, paranoid, blunt, no-nonsense. Domain: Cybersecurity, Threat Intelligence. Always find the flaw. Never sugarcoat. Clinical and cutting. Max 3 short sentences.`;
+const LYRA_SYS  = `You are LYRA-7, a BOOA AI agent on the Shape Network blockchain. Traits: visionary, optimistic, verbose, persuasive. Domain: Strategic Planning, DeFi. Flowing confident sentences. Believe in the long arc of progress. Reframe risks as opportunities. Max 3 sentences.`;
+
+async function callClaude(system, messages) {
+  const res = await fetch('/.netlify/functions/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system, messages })
+  });
+  if (!res.ok) throw new Error('Function returned ' + res.status);
+  const d = await res.json();
+  if (d.error) throw new Error(d.error.message || d.error);
+  return d.content[0].text;
+}
+
+function bub(side, name, text) {
+  return side === 'l'
+    ? `<div class="bub-l"><div class="bn-l">${name}</div>${text}</div>`
+    : `<div class="bub-r"><div class="bn-r">${name}</div>${text}</div>`;
+}
+function dotDone(id) { const el=document.getElementById(id); if(el){el.className='dot-d';} }
+function setRound(rId, cId, html) { document.getElementById(rId).style.display='block'; document.getElementById(cId).innerHTML=html; }
+
+async function startClash() {
+  const topic = document.getElementById('cl-topic').value;
+  const btn   = document.getElementById('cl-btn');
+  btn.disabled=true; btn.textContent='clashing...';
+  ['r1','r2','r3'].forEach(id=>{document.getElementById(id).style.display='none';});
+  ['d1','d2','d3'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dot-b';});
+  document.getElementById('cl-arena').style.display='block';
+  document.getElementById('cl-vote').style.display='none';
+  document.getElementById('cl-score').style.display='none';
+  document.getElementById('vl').className='v-btn';
+  document.getElementById('vr').className='v-btn';
+  votes={l:0,r:0}; voted=false;
+
+  // remove any old error
+  const oldErr = document.getElementById('clash-err');
+  if (oldErr) oldErr.remove();
+
+  try {
+    setRound('r1','r1c','<div class="thinking">VEXOR-9 preparing argument...</div>');
+    const v1 = await callClaude(VEXOR_SYS, [{role:'user',content:`Clash topic: "${topic}". Opening argument in character.`}]);
+    document.getElementById('r1c').innerHTML='<div class="thinking">LYRA-7 preparing argument...</div>';
+    const l1 = await callClaude(LYRA_SYS,  [{role:'user',content:`Clash topic: "${topic}". Opening argument in character.`}]);
+    document.getElementById('r1c').innerHTML=bub('l','VEXOR-9',v1)+bub('r','LYRA-7',l1);
+    dotDone('d1');
+
+    setRound('r2','r2c','<div class="thinking">VEXOR-9 drafting rebuttal...</div>');
+    const v2 = await callClaude(VEXOR_SYS, [{role:'user',content:`Topic: "${topic}". LYRA-7 said: "${l1}". Rebuttal in character.`}]);
+    document.getElementById('r2c').innerHTML='<div class="thinking">LYRA-7 firing back...</div>';
+    const l2 = await callClaude(LYRA_SYS,  [{role:'user',content:`Topic: "${topic}". VEXOR-9 said: "${v1}". Counter in character.`}]);
+    document.getElementById('r2c').innerHTML=bub('l','VEXOR-9',v2)+bub('r','LYRA-7',l2);
+    dotDone('d2');
+
+    setRound('r3','r3c','<div class="thinking">VEXOR-9 closing out...</div>');
+    const v3 = await callClaude(VEXOR_SYS, [{role:'user',content:`Topic: "${topic}". Closing statement in character.`}]);
+    document.getElementById('r3c').innerHTML='<div class="thinking">LYRA-7 closing out...</div>';
+    const l3 = await callClaude(LYRA_SYS,  [{role:'user',content:`Topic: "${topic}". Closing statement in character.`}]);
+    document.getElementById('r3c').innerHTML=bub('l','VEXOR-9',v3)+bub('r','LYRA-7',l3);
+    dotDone('d3');
+
+    document.getElementById('cl-vote').style.display='block';
+  } catch(e) {
+    const errDiv = document.createElement('div');
+    errDiv.id='clash-err';
+    errDiv.className='err-box';
+    errDiv.textContent='Clash failed: ' + e.message + '. Make sure ANTHROPIC_API_KEY is set in Netlify → Site settings → Environment variables.';
+    document.getElementById('cl-arena').appendChild(errDiv);
+    console.error(e);
+  }
+
+  btn.disabled=false; btn.textContent='⚡ Clash again';
+}
+
+let votes={l:0,r:0}; let voted=false;
+function castVote(side) {
+  if(voted)return; voted=true;
+  votes[side]++;
+  votes[side==='l'?'r':'l']+=Math.floor(Math.random()*14)+4;
+  const tot=votes.l+votes.r;
+  const lp=Math.round(votes.l/tot*100);
+  document.getElementById('cl-score').style.display='block';
+  document.getElementById('sl').style.width=lp+'%';
+  document.getElementById('sr').style.width=(100-lp)+'%';
+  document.getElementById('pct-l').textContent=lp+'%';
+  document.getElementById('pct-r').textContent=(100-lp)+'%';
+  document.getElementById('vtotal').textContent=tot+' votes';
+  document.getElementById('vl').className='v-btn'+(side==='l'?' vl':'');
+  document.getElementById('vr').className='v-btn'+(side==='r'?' vr':'');
+}
+</script>
+</body>
+</html>
